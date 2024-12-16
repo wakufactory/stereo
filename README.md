@@ -27,4 +27,4 @@ set images
  - IMG_4559_c.jpg  :  SBS image cross 
  - IMG_4559.HEIC   :  HEIC image for VisionPro  
 
-see [sample.html](sample.html)
+see [sample.html](https://wakufactory.github.io/stereo/sample.html)
