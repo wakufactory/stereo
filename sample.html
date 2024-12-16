@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html  lang="jp">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width">
+<title>STEREO test</title>
+<script src="https://aframe.io/releases/1.6.0/aframe.min.js" crossorigin></script>
+<script src="stereo.js"></script>
+
+<style type="text/css">
+body {
+	font-family: sans-serif ;
+	font-size: 18px ;
+}
+button {
+	font-size: 18px ;	
+}
+#normal-content {
+	display: block;
+}
+#aframe-scene {
+	display: none;
+	width: 100vw;
+	height: 100vh;
+}
+.vr-btn,.ar-btn {
+	font-size:2rem;
+	display:none ;
+	margin-bottom:2rem ;
+}
+img:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
+}
+.hidden {
+	display:none 
+}
+@media (min-resolution: 2dppx) and (min-width: 1200px) {
+  body {
+	background-color: lightblue;
+  }
+}
+
+@media (max-width: 1200px) {
+  body {
+	background-color: lightgreen;
+  }
+}
+</style>
+</head>
+<body>
+<div id="normal-content">
+<h2>Spatial Photo by iPhone 15Pro </h2>
+<div id=msg></div>
+<div >
+<picture id=p1 >
+	<source srcset="IMG_4559_p.jpg" media="(max-width: 1200px)"/>
+	<img class=fs data-heic="IMG_4559.HEIC" src="IMG_4559_c.jpg" width="100%" />
+</picture>
+<button class=vr-btn data-src="IMG_4559_p.jpg">Enter VR</button><button class=ar-btn data-src="IMG_4559_p.jpg">Enter AR</button>
+</div>
+<div >
+<picture>
+	<source srcset="IMG_4541_p.jpg" media="(max-width: 1200px)"/>
+	<img class=fs data-heic="IMG_4541.HEIC" src="IMG_4541_c.jpg" width="100%" />
+</picture>
+<button class=vr-btn data-src="IMG_4541_p.jpg">Enter VR</button><button class=ar-btn data-src="IMG_4541_p.jpg">Enter AR</button>
+</div>
+<h2>photos taken twice stereo by iPhone15pro</h2>
+<div >
+<picture>
+	<source srcset="icyou_p.jpg" media="(max-width: 1200px)"/>
+	<img class=fs data-heic="icyou.HEIC" src="icyou_c.jpg" width="100%" />
+</picture>
+<button class=vr-btn data-src="icyou_p.jpg">Enter VR</button><button class=ar-btn data-src="icyou_p.jpg">Enter AR</button>
+</div>
+<div >
+<picture>
+	<source srcset="koma32_p.jpg" media="(max-width: 1200px)"/>
+	<img class=fs data-heic="koma32.HEIC" src="koma32_c.jpg" width="100%" />
+</picture>
+<button class=vr-btn data-src="koma32_p.jpg">Enter VR</button><button class=ar-btn data-src="koma32_p.jpg">Enter AR</button>
+</div>
+</div>
+</body>
+</html>
