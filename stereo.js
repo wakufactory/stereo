@@ -5,6 +5,7 @@ window.addEventListener("load",()=> {
 	}
 	const afscene = `	<a-scene embedded background="color:#222" isMobile="false" xr-mode-ui="enabled: false" webxr="referenceSpaceType:local" >
 	<a-assets></a-assets>
+
 	<a-entity stereoimg position="0 0 -5"  rotation="0 0 0"  scale="1 1 1" grabbable="distance:1">
 	<a-plane  width="5" position="0 0 0" eye="r"  material="shader:stereoflat;lr:1" ></a-plane>
 	<a-plane  width="5" position="0 0 0" eye="l" material="shader:stereoflat;lr:0" ></a-plane>
@@ -46,7 +47,9 @@ window.addEventListener("load",()=> {
 
 		o.addEventListener('click',() => {
 			pos = [window.scrollX,window.scrollY]
-			base.components.stereoimg.setimg(o.getAttribute("data-src"),"st"+id++)
+			const width = o.getAttribute("data-width")
+			const depth = o.getAttribute("data-depth")
+			base.components.stereoimg.setimg(o.getAttribute("data-src"),"st"+id++,parseFloat(width)>0?width:5,parseFloat(depth)>0?depth:5 )
 			
 			// VRモードを開始
 			const scene = document.querySelector('a-scene');
@@ -68,9 +71,10 @@ AFRAME.registerComponent('stereoimg', {
 		this.imgs = this.el.querySelectorAll("a-plane")
 		this.cam = document.querySelector("[camera]").object3D
 		this.camy = 0
-		this.base = this.el  
+		this.base = this.el 
 	},
-	setimg:function(src,id) {
+	setimg:function(src,id,width=5,depth=5) {
+		this.depth = depth 
 		return new Promise((resolve,reject)=>{
 		console.log(src)
 			const assets = document.querySelector("a-assets")
@@ -79,6 +83,8 @@ AFRAME.registerComponent('stereoimg', {
 			im1.setAttribute("crossorigin","anonymous")
 			this.imgs[0].setAttribute("material","src","")
 			this.imgs[1].setAttribute("material","src","")
+			this.imgs[0].setAttribute("width",width)
+			this.imgs[1].setAttribute("width",width)
 			im1.onload = ()=>{
 				const as=(im1.height/im1.width*2)
 				const h=this.imgs[0].getAttribute("width")*as
@@ -95,7 +101,7 @@ AFRAME.registerComponent('stereoimg', {
 	tick:function(time,dur) {
 			if( 0!=this.cam.position.y) {
 //				POXA.log(cam.position.y)
-				this.base.object3D.position.set(this.cam.position.x,this.cam.position.y,this.cam.position.z-5)
+				this.base.object3D.position.set(this.cam.position.x,this.cam.position.y,this.cam.position.z-this.depth)
 				this.camy = this.cam.position.y 
 			}
 	}
@@ -105,19 +111,32 @@ AFRAME.registerComponent('eye',{
 	schema: {
 		default:""
 	},
+	dependencies: ['camera'],
 	init:function() {
+		if(!this.el.sceneEl.dataset.stereoEye) {	//シングルトンでイベント設定
+			this.el.sceneEl.dataset.stereoEye = true 
+			this.cam = document.querySelector("[camera]")
+			if(this.el.sceneEl.is('vr-mode')) {
+				this.cam.object3DMap.camera.layers.disable(1) 
+				this.cam.object3DMap.camera.layers.disable(2) 
+			} else {
+				this.cam.object3DMap.camera.layers.enable(1) 
+				this.cam.object3DMap.camera.layers.enable(2) 					
+			}
+			this.el.sceneEl.addEventListener("enter-vr", ev=>{ 
+				this.cam.object3DMap.camera.layers.disable(1) 
+				this.cam.object3DMap.camera.layers.disable(2) 
+			})
+			this.el.sceneEl.addEventListener("exit-vr", ev=>{ 
+				this.cam.object3DMap.camera.layers.enable(1) 
+				this.cam.object3DMap.camera.layers.enable(2) 
+			})
+		}
 	},
 	update:function(old) {
-		if(this.el.object3DMap.camera) {
-			if(this.data=="l"||this.data=="")
-				this.el.object3DMap.camera.layers.enable(1) 
-			if(this.data=="r"||this.data=="")
-				this.el.object3DMap.camera.layers.enable(2) 
-		} else 
+		if(this.el.object3DMap?.mesh)
 			this.el.object3DMap.mesh.layers.set(this.data==""?0:(this.data=="l"?1:2))
-	},
-	tick:function(time,dur) {
-	},
+	}
 })
 AFRAME.registerComponent('exitvr', {
 	init:function() {
