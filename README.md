@@ -8,7 +8,7 @@ WebXR (MetaQuest) and Vision Pro compatible
 include libs 
 
 ```
-<script src="https://aframe.io/releases/1.6.0/aframe.min.js" crossorigin></script>
+<script src="https://aframe.io/releases/1.7.1/aframe.min.js" crossorigin></script>
 <script src="stereo.js"></script>
 ```
 
